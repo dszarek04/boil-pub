@@ -58,6 +58,8 @@ interface Props {
 }
 
 export default function EventSequenceInput({ rows, onChange, fieldErrors }: Props) {
+  const normalizeNodeValue = (value: string) =>
+    value.replace(/\D/g, "").replace(/^0+(?=\d)/, "");
   const addRow = () =>
     onChange([
       ...rows,
@@ -164,8 +166,14 @@ export default function EventSequenceInput({ rows, onChange, fieldErrors }: Prop
 
               <div className="px-2 py-2 flex items-center gap-2">
                 <Input
+                  type="number"
+                  min={1}
+                  step={1}
+                  inputMode="numeric"
                   value={row.fromNode}
-                  onChange={(e) => update(row.id, "fromNode", e.target.value.trim())}
+                  onChange={(e) =>
+                    update(row.id, "fromNode", normalizeNodeValue(e.target.value))
+                  }
                   placeholder="od"
                   className={cn(
                     "h-8 w-16 text-sm font-mono text-center",
@@ -177,8 +185,14 @@ export default function EventSequenceInput({ rows, onChange, fieldErrors }: Prop
                   style={{ color: "var(--muted-foreground)" }}
                 />
                 <Input
+                  type="number"
+                  min={1}
+                  step={1}
+                  inputMode="numeric"
                   value={row.toNode}
-                  onChange={(e) => update(row.id, "toNode", e.target.value.trim())}
+                  onChange={(e) =>
+                    update(row.id, "toNode", normalizeNodeValue(e.target.value))
+                  }
                   placeholder="do"
                   className={cn(
                     "h-8 w-16 text-sm font-mono text-center",

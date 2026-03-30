@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+const nodeNumberSchema = (requiredMessage: string) =>
+  z
+    .string()
+    .trim()
+    .min(1, requiredMessage)
+    .regex(/^[1-9]\d*$/, "Numer węzła musi być dodatnią liczbą całkowitą.");
 export const predecessorRowSchema = z.object({
   id: z.string(),
   name: z
@@ -30,10 +36,10 @@ export const eventSequenceRowSchema = z
       .coerce.number()
       .int("Czas trwania musi być liczbą całkowitą.")
       .positive("Czas trwania musi być większy od 0."),
-    fromNode: z.string().trim().min(1, "Węzeł początkowy jest wymagany."),
-    toNode: z.string().trim().min(1, "Węzeł końcowy jest wymagany."),
+    fromNode: nodeNumberSchema("Węzeł początkowy jest wymagany."),
+    toNode: nodeNumberSchema("Węzeł końcowy jest wymagany."),
   })
-  .refine((data) => data.fromNode !== data.toNode, {
+  .refine((data) => Number(data.fromNode) !== Number(data.toNode), {
     message: "Węzeł początkowy i końcowy nie mogą być identyczne.",
     path: ["toNode"],
   });
